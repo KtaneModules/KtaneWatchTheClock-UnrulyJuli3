@@ -98,8 +98,10 @@ public sealed class DigitGroup
     {
         string modName;
 
+        if (child.GetComponent<NeedyComponent>())
+            return;
+
         var mod = child.GetComponent<ModBombComponent>();
-        var needyMod = child.GetComponent<ModNeedyComponent>();
         if (mod)
         {
             string name = mod.GetModuleDisplayName(),
@@ -109,10 +111,6 @@ public sealed class DigitGroup
                 return;
 
             modName = name;
-        }
-        else if (needyMod)
-        {
-            modName = needyMod.GetModuleDisplayName();
         }
         else
         {
