@@ -1,0 +1,10 @@
+{
+  "name": "WatchTheClock-Editor",
+  "references": [
+    "WatchTheClock"
+  ],
+  "includePlatforms": [
+    "Editor"
+  ],
+  "excludePlatforms": []
+}

@@ -1,0 +1,8 @@
+{
+  "name": "WatchTheClock",
+  "references": [
+    "GameProxies"
+  ],
+  "includePlatforms": [],
+  "excludePlatforms": []
+}
