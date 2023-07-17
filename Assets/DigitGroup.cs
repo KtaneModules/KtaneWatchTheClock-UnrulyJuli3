@@ -39,7 +39,9 @@ public sealed class DigitGroup
             return group;
         }
 
-        return new DigitGroup(groupId, mod);
+        DigitGroup newGroup = new DigitGroup(groupId, mod);
+        s_groups[groupId] = newGroup;
+        return newGroup;
     }
 
     public int GetStartingDigit(KtaneTimerDigit mod)
@@ -121,12 +123,12 @@ public sealed class DigitGroup
             modName = vanillaComponent.ComponentType.ToString();
         }
 
-        Log("Found a module: {0}", modName);
+        Log("Found: {0}", modName);
 
         var rootSelectable = child.GetComponent<Selectable>();
         if (!rootSelectable)
         {
-            Log("Module {0} has no root Selectable, ignoring", modName);
+            Log("{0} has no root Selectable, ignoring", modName);
             return;
         }
 
@@ -138,7 +140,9 @@ public sealed class DigitGroup
     internal void HandleInteraction(string modName)
     {
         int timerDigit = (int)(_author._bomb.GetTime() % 10f);
-        foreach (KtaneTimerDigit mod in _mods)
+        Log("Interacted with selectable from mod {0} (timer digit: {1})", modName, timerDigit);
+
+        foreach (KtaneTimerDigit mod in Modules)
             if (mod.Digit == timerDigit)
             {
                 mod._module.HandleStrike();

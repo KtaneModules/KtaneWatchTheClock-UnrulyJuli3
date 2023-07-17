@@ -6,6 +6,10 @@
 
     private readonly Selectable _root;
 
+    private readonly BombComponent _module;
+
+    private bool _isUnhooked = false;
+
     private Selectable[] _lastSelectables;
 
     public SelectableGroup(DigitGroup group, string modName, Selectable root)
@@ -13,10 +17,12 @@
         _group = group;
         _modName = modName;
         _root = root;
+        _module = _root.GetComponent<BombComponent>();
     }
 
     public void Hook()
     {
+        _group.Log("Hooking {0}", _root.name);
         _lastSelectables = _root.Children;
         foreach (Selectable selectable in _lastSelectables)
         {
@@ -24,16 +30,38 @@
             {
                 selectable.OnInteract -= HandleInteraction;
                 selectable.OnInteract += HandleInteraction;
+                //_group.Log("Assigned handler to selectable {0} of module {1}", selectable.name, _modName);
             }
             else
             {
-                _group.Log("Module {0} is missing a selectable child", _modName);
+                _group.Log("{0} is missing a selectable child", _modName);
             }
         }
     }
 
+    public void Unhook()
+    {
+        if (_isUnhooked)
+            return;
+
+        _group.Log("Unhooking {0}", _root.name);
+        _isUnhooked = true;
+        foreach (Selectable selectable in _lastSelectables)
+            if (selectable)
+                selectable.OnInteract -= HandleInteraction;
+    }
+
     public void Update()
     {
+        if (_isUnhooked)
+            return;
+
+        if (_module.IsSolved)
+        {
+            Unhook();
+            return;
+        }
+
         Selectable[] current = _root.Children;
         if (current.Length != _lastSelectables.Length)
         {

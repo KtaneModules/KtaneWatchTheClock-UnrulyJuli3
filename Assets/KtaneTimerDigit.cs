@@ -65,7 +65,7 @@ public class KtaneTimerDigit : MonoBehaviour
         _button.OnInteractEnded += OnButtonUp;
 
 		_digitText.text = "";
-         Log("Starting digit: {0}", _digit);
+        Log("Starting digit: {0}", _digit);
     }
 
 	private void OnDestroy()
@@ -86,12 +86,17 @@ public class KtaneTimerDigit : MonoBehaviour
         if (_isSolved || _isInSolvableState)
             return;
 
-        int remaining = _bomb.GetSolvableModuleNames().Count(name => !_ignoredModules.Contains(name));
-		if (remaining <= 0)
+		List<string> remaining = _bomb.GetSolvableModuleNames(),
+			solved = _bomb.GetSolvedModuleNames();
+
+		foreach (string name in solved)
+			remaining.Remove(name);
+
+		if (remaining.Count(name => !_ignoredModules.Contains(name)) <= 0)
 		{
             EnterSolvableState();
-			Log("All non-ignored modules solved. Module is now solvable.");
-			return;
+            Log("All non-ignored modules solved. Module is now solvable.");
+            return;
         }
 
 		if (_digitGroup.IsAuthor(this))
